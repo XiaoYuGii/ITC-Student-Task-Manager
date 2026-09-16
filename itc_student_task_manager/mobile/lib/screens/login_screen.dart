@@ -1,0 +1,8 @@
+import 'package:flutter/material.dart';
+import '../services/api_service.dart';
+import 'task_screen.dart';
+class LoginScreen extends StatefulWidget {const LoginScreen({super.key}); State<LoginScreen> createState()=>_S();}
+class _S extends State<LoginScreen>{final u=TextEditingController(),p=TextEditingController(); bool loading=false;
+ Future<void> go(bool register) async{setState(()=>loading=true); final ok=register?await ApiService.register(u.text,p.text):await ApiService.login(u.text,p.text); setState(()=>loading=false); if(!mounted)return; if(ok)Navigator.pushReplacement(context,MaterialPageRoute(builder:(_)=>const TaskScreen())); else ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text('Check username/password. Password must be 6+ characters.')));}
+ Widget build(c)=>Scaffold(body:Center(child:ConstrainedBox(constraints:const BoxConstraints(maxWidth:420),child:Padding(padding:const EdgeInsets.all(24),child:Column(mainAxisSize:MainAxisSize.min,children:[const Icon(Icons.task_alt,size:72),const SizedBox(height:12),Text('ITC Student Task Manager',style:Theme.of(c).textTheme.headlineSmall),const SizedBox(height:24),TextField(controller:u,decoration:const InputDecoration(labelText:'Username',border:OutlineInputBorder())),const SizedBox(height:12),TextField(controller:p,obscureText:true,decoration:const InputDecoration(labelText:'Password',border:OutlineInputBorder())),const SizedBox(height:18),if(loading)const CircularProgressIndicator() else Row(children:[Expanded(child:FilledButton(onPressed:()=>go(false),child:const Text('Login'))),const SizedBox(width:10),Expanded(child:OutlinedButton(onPressed:()=>go(true),child:const Text('Register')))])])))));
+}
